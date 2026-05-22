@@ -160,20 +160,37 @@ nav {
 }
 
 /* Visão Geral em destaque */
-.nav-full a.nav-destaque {
+.nav-full a.nav-destaque,
+.nav-full span.nav-destaque {
   color: #C8102E;
   font-weight: 600;
   border-bottom: 1px solid #f3f4f6;
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  white-space: nowrap;
 }
 
-.nav-full a.nav-destaque svg {
+.nav-full span.nav-destaque {
+  padding-left: 18px;
+}
+
+.nav-full a.nav-destaque svg,
+.nav-full span.nav-destaque svg {
   color: #C8102E;
+  flex-shrink: 0;
 }
 
 .nav-full a.nav-destaque:hover {
   background: #fff5f5;
   color: #a50d26;
+}
+
+/* Não clicável */
+.nav-disabled {
+  cursor: default;
 }
 
 .nav-full a.nav-destaque.active {
