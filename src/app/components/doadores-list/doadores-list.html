@@ -24,10 +24,13 @@
               type="text"
               [(ngModel)]="nomeDoador"
               name="nome"
-              [class.input-erro]="submitted() && !nomeDoador.trim()"
+              [class.input-erro]="submitted() && (!nomeDoador.trim() || nomeComCaracteresInvalidos)"
             />
             @if (submitted() && !nomeDoador.trim()) {
               <span class="msg-erro">Campo obrigatório</span>
+            }
+            @if (submitted() && nomeComCaracteresInvalidos) {
+              <span class="msg-erro">Nome não deve conter números ou caracteres especiais</span>
             }
           </div>
           <div class="form-field flex-2">
@@ -43,8 +46,8 @@
           <div class="form-field">
             <label>Sexo</label>
             <div class="sexo-toggle">
-              <span [class.active]="sexoDoador === 'H'" (click)="sexoDoador = 'H'">H</span>
               <span [class.active]="sexoDoador === 'M'" (click)="sexoDoador = 'M'">M</span>
+              <span [class.active]="sexoDoador === 'F'" (click)="sexoDoador = 'F'">F</span>
             </div>
           </div>
         </div>
@@ -107,15 +110,6 @@
             }
           </div>
           <div class="form-field flex-2">
-            <label>Hemoglobina</label>
-            <input type="number" [(ngModel)]="hemoglobinaDoador" name="hemoglobina" step="0.1" />
-          </div>
-          <div class="form-field flex-2">
-            <label>Pressão Arterial</label>
-            <input type="text" [(ngModel)]="pressaoArterialDoador" name="pressao"
-              (input)="mascaraPressao($event)" maxlength="7" placeholder="120/80" />
-          </div>
-          <div class="form-field flex-2">
             <label>Alergias</label>
             <input type="text" [(ngModel)]="alergiasDoador" name="alergias" />
           </div>
@@ -156,7 +150,7 @@
 <div class="page">
   <div class="page-header">
     <h2>Todos os Doadores</h2>
-    <button class="btn-primary" (click)="abrirModal()">Add Doador</button>
+    <button class="btn-primary" (click)="abrirModal()">Novo Doador</button>
   </div>
 
   <div class="search-banner">
@@ -175,8 +169,8 @@
   <div class="filtros-bar">
     <div class="filtro-grupo">
       <span class="filtro-label">Sexo</span>
-      <button class="chip" [class.ativo]="filtroSexo === 'H'" (click)="setFiltroSexo('H')">Masculino</button>
-      <button class="chip" [class.ativo]="filtroSexo === 'M'" (click)="setFiltroSexo('M')">Feminino</button>
+      <button class="chip" [class.ativo]="filtroSexo === 'M'" (click)="setFiltroSexo('M')">Masculino</button>
+      <button class="chip" [class.ativo]="filtroSexo === 'F'" (click)="setFiltroSexo('F')">Feminino</button>
     </div>
     <div class="filtro-grupo">
       <span class="filtro-label">Tipo</span>
@@ -226,7 +220,7 @@
               </div>
             </td>
             <td><span class="badge-sangue">{{ getTipoSangueDisplay(d) }}</span></td>
-            <td>{{ d.sexoDoador === 'H' ? 'Masculino' : 'Feminino' }}</td>
+            <td>{{ d.sexoDoador === 'M' ? 'Masculino' : 'Feminino' }}</td>
             <td>
               <span class="badge-eleg badge-eleg--{{ getElegibilidade(d).type }}">
                 {{ getElegibilidade(d).text }}

@@ -35,8 +35,6 @@ export class DoadoresList implements OnInit {
     'dataNascimentoDoador': 'Data de Nascimento',
     'tipoSangue': 'Tipo Sanguíneo',
     'fatorRh': 'Fator Rh',
-    'hemoglobinaDoador': 'Hemoglobina',
-    'pressaoArterialDoador': 'Pressão Arterial',
     'alergiasDoador': 'Alergias',
     'medicamentosDoador': 'Medicamentos',
     'observacoes': 'Observações',
@@ -48,7 +46,7 @@ export class DoadoresList implements OnInit {
       s = s.replaceAll(campo, nome);
     }
     s = s.replace('deve ser um número', 'deve ser numérico');
-    s = s.replace("'H' para homem ou 'M' para mulher", '"H" para Masculino ou "M" para Feminino');
+    s = s.replace("'M' para masculino ou 'F' para feminino", '"M" para Masculino ou "F" para Feminino');
     s = s.replace('já cadastrado por outro doador', 'já pertence a outro doador cadastrado');
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
@@ -76,7 +74,7 @@ export class DoadoresList implements OnInit {
   nomeDoador = '';
   cpfDoador = '';
   telefoneDoador = '';
-  sexoDoador = 'H';
+  sexoDoador = 'M';
   cidadeDoador = '';
   estadoDoador = '';
   pesoDoador: number | null = null;
@@ -84,8 +82,6 @@ export class DoadoresList implements OnInit {
   dataNascimentoDoador = '';
   tipoSangue = '';
   fatorRh = '';
-  hemoglobinaDoador: number | null = null;
-  pressaoArterialDoador = '';
   alergiasDoador = '';
   medicamentosDoador = '';
   observacoesDoador = '';
@@ -199,7 +195,7 @@ export class DoadoresList implements OnInit {
     if (!doador.dataUltimaDoacao) return { text: 'Sim', type: 'sim' };
     const lastDonation = new Date(doador.dataUltimaDoacao);
     const today = new Date();
-    const waitDays = doador.sexoDoador === 'H' ? 60 : 90;
+    const waitDays = doador.sexoDoador === 'M' ? 60 : 90;
     const eligibleDate = new Date(lastDonation.getTime() + waitDays * 24 * 60 * 60 * 1000);
     const daysRemaining = Math.ceil((eligibleDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     if (daysRemaining > 0) return { text: `${daysRemaining} Dias`, type: 'dias' };
@@ -268,13 +264,6 @@ export class DoadoresList implements OnInit {
     el.value = v;
   }
 
-  mascaraPressao(event: Event) {
-    const el = event.target as HTMLInputElement;
-    const d = el.value.replace(/\D/g, '').substring(0, 6);
-    const v = d.length > 3 ? `${d.slice(0,3)}/${d.slice(3)}` : d;
-    this.pressaoArterialDoador = v;
-    el.value = v;
-  }
 
   abrirModal() {
     this.modoEdicao.set(false);
@@ -290,7 +279,7 @@ export class DoadoresList implements OnInit {
     this.nomeDoador = doador.nomeDoador || '';
     this.cpfDoador = doador.cpfDoador || '';
     this.telefoneDoador = doador.telefoneDoador || '';
-    this.sexoDoador = doador.sexoDoador || 'H';
+    this.sexoDoador = doador.sexoDoador || 'M';
     this.cidadeDoador = doador.cidadeDoador || '';
     this.estadoDoador = doador.EstadoDoador || '';
     this.pesoDoador = doador.pesoDoador ?? null;
@@ -298,8 +287,6 @@ export class DoadoresList implements OnInit {
     this.dataNascimentoDoador = doador.dataNascimentoDoador ? this.formatarData(doador.dataNascimentoDoador) : '';
     this.tipoSangue = doador.tipoSangue || '';
     this.fatorRh = doador.fatorRh || '';
-    this.hemoglobinaDoador = doador.hemoglobinaDoador ?? null;
-    this.pressaoArterialDoador = doador.pressaoArterialDoador || '';
     this.alergiasDoador = doador.alergiasDoador || '';
     this.medicamentosDoador = doador.medicamentosDoador || '';
     this.observacoesDoador = doador.observacoes || '';
@@ -318,7 +305,7 @@ export class DoadoresList implements OnInit {
     this.nomeDoador = '';
     this.cpfDoador = '';
     this.telefoneDoador = '';
-    this.sexoDoador = 'H';
+    this.sexoDoador = 'M';
     this.cidadeDoador = '';
     this.estadoDoador = '';
     this.pesoDoador = null;
@@ -326,16 +313,18 @@ export class DoadoresList implements OnInit {
     this.dataNascimentoDoador = '';
     this.tipoSangue = '';
     this.fatorRh = '';
-    this.hemoglobinaDoador = null;
-    this.pressaoArterialDoador = '';
     this.alergiasDoador = '';
     this.medicamentosDoador = '';
     this.observacoesDoador = '';
     this.submitted.set(false);
   }
 
+  get nomeComCaracteresInvalidos(): boolean {
+    return !!this.nomeDoador.trim() && !/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(this.nomeDoador);
+  }
+
   get camposInvalidos(): boolean {
-    return !this.nomeDoador.trim() || !this.tipoSangue || !this.fatorRh;
+    return !this.nomeDoador.trim() || this.nomeComCaracteresInvalidos || !this.tipoSangue || !this.fatorRh;
   }
 
   salvar() {
@@ -357,8 +346,6 @@ export class DoadoresList implements OnInit {
       dataNascimentoDoador: this.paraISO(this.dataNascimentoDoador),
       tipoSangue: this.tipoSangue,
       fatorRh: this.fatorRh,
-      hemoglobinaDoador: this.hemoglobinaDoador,
-      pressaoArterialDoador: this.pressaoArterialDoador,
       alergiasDoador: this.alergiasDoador || null,
       medicamentosDoador: this.medicamentosDoador || null,
       observacoes: this.observacoesDoador || null,

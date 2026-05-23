@@ -189,7 +189,7 @@ export class BolsaLista implements OnInit {
     this.quantidadeMl = bolsa.quantidade_ml ?? null;
     this.solucaoConservante = bolsa.solucao_conservante || '';
     this.dataColeta = bolsa.data_coleta ? this.formatarData(bolsa.data_coleta) : '';
-    this.observacoes = '';
+    this.observacoes = bolsa.observacoes || '';
     this.showModal.set(true);
   }
 
@@ -225,6 +225,7 @@ export class BolsaLista implements OnInit {
       data_coleta: this.paraISO(this.dataColeta),
       solucao_conservante: this.solucaoConservante,
       id_doador: this.idDoadorSelecionado,
+      observacoes: this.observacoes || null,
     };
 
     if (this.modoEdicao()) {
